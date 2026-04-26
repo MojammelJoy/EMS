@@ -38,12 +38,12 @@ const LoginForm = ({role, title, subtitle}) => {
         <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Email address</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="stackleo@gmail.com" />
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="stackleo@gmail.com" className="w-full px-4 py-2 border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500" />
             </div>
             <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
                  <div className="relative">
-                    <input type={showPassword ? 'text' : 'password'}  onChange={(e) => setPassword(e.target.value)} required className="pr-11" placeholder="********" />
+                    <input type={showPassword ? 'text' : 'password'}  onChange={(e) => setPassword(e.target.value)} required className="w-full px-4 py-2 border border-slate-300 rounded-md pr-11 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500" placeholder="********" />
                     <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-500 transition-colors" onClick={()=>setShowPassword(!showPassword)}>
                         {showPassword ? <EyeOffIcon size={18}/> : <EyeIcon size={18}/>}
                     </button>
