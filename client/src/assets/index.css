@@ -16,10 +16,11 @@
 
     /* Button styles */
     .btn-primary {
-        @apply bg-linear-to-r from-indigo-600 to-indigo-500 text-white px-5 py-2.5 rounded-md text-sm
-            hover:from-indigo-700 hover:to-indigo-600 transition-all duration-200 shadow-md shadow-indigo-500/25
+        @apply bg-gradient-to-r from-orange-600 to-orange-500 text-white px-5 py-2.5 rounded-md text-sm
+            hover:from-orange-700 hover:to-orange-600 transition-all duration-200 shadow-md shadow-orange-500/25
             active:scale-[0.98];
     }
+
     .btn-secondary {
         @apply bg-white text-slate-700 border border-slate-200 px-5 py-2.5 rounded-md text-sm
             hover:bg-slate-50 hover:border-slate-300 transition-all duration-200;
@@ -30,7 +31,7 @@
     select,
     textarea {
         @apply w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-md
-            focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400
+            focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400
             transition-all duration-200 text-sm placeholder:text-slate-400;
     }
 
@@ -86,43 +87,4 @@
     .animate-slide-up {
         animation: slideUp 0.4s ease-out;
     }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 6px;
-}
-::-webkit-scrollbar-track {
-    @apply bg-transparent;
-}
-::-webkit-scrollbar-thumb {
-    @apply bg-slate-300 rounded-full;
-}
-::-webkit-scrollbar-thumb:hover {
-    @apply bg-slate-400;
-}
-
-/* Selection */
-::selection {
-    @apply bg-indigo-100 text-indigo-900;
 }
