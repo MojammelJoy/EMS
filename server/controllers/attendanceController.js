@@ -33,7 +33,7 @@ export const clockInOut = async (req, res) => {
             })
 
             return res.json({ success: true, type: "CHECK_IN", 
-                date: attendance
+                data: attendance
             });
         } else if(!existing.checkOut){
             const checkInTime = new Date(existing.checkIn).getTime()
@@ -66,10 +66,10 @@ export const clockInOut = async (req, res) => {
 }
 
 
-// Clock in/out for employee
-// POST /api/attendance
+// Get attendance for employee
+// GET /api/attendance
 
-export const clockInOut = async (req, res) => {
+export const getAttendance = async (req, res) => {
     try {
         const session = req.session;
         const employee = await Employee.findOne({ userId: session.userId})
@@ -79,7 +79,7 @@ export const clockInOut = async (req, res) => {
         const history = (await Attendance.find({employeeId: employee._id})).sort({date: -1}).limit(limit)
 
         return res.json({ 
-            date: history,
+            data: history,
             employee: {isDeleted: employee.isDeleted}
         })
     } catch (error) {
