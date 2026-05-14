@@ -21,7 +21,10 @@ export const login = async (req, res) => {
         }
          
         if(role_type === "admin" && user.role !== "ADMIN") {
-            return res.status(401).json({ error: "Not authorized as admin"})
+            return res.status(401).json({ error: "Not authorized as admin"});
+        }
+        if(role_type === "employee" && user.role !== "EMPLOYEE") {
+            return res.status(401).json({ error: "Not authorized as employee"});
         }
 
         const isValid = await bcrypt.compare(password, user.password)

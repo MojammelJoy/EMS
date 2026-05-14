@@ -41,8 +41,3 @@ export const updateProfile = async (req, res) => {
  }
 }
 
-// Get profile
-// GET/api/profile
-
-// Get profile
-// GET/api/profile

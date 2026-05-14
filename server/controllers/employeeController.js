@@ -31,7 +31,7 @@ export const getEmployees = async (req, res)=>{
 //POST/api/employees
 export const createEmployee = async (req, res)=>{
     try {
-        const {firstName, lastName, email, phone, position, department, basicSalary, allowances, deducations, joinData, password, role, bio} = req.body;
+        const {firstName, lastName, email, phone, position, department, basicSalary, allowances, deductions, joinData, password, role, bio} = req.body;
 
         if(!email || !password || !firstName || !lastName){
             return res.status(400).json({ error: "Missing required fields" });
@@ -54,8 +54,8 @@ export const createEmployee = async (req, res)=>{
             department: department || "Engineering",
             basicSalary: Number(basicSalary) || 0,
             allowances: Number(allowances) || 0,
-            deducations: Number(deducations) || 0,
-            joinData: new Date(joinData),
+            deductions: Number(deductions) || 0,
+            joinDate: new Date(joinDate),
             bio: bio || "",
             })
 
@@ -70,10 +70,10 @@ export const createEmployee = async (req, res)=>{
 }
 // Update employee
 //PUT/api/employees/:id
-export const updateEmployees = async (req, res)=>{
+export const updateEmployee = async (req, res)=>{
    try {
         const {id} = req.params;
-        const {firstName, lastName, email, phone, position, department, basicSalary, allowances, deducations, password, role, bio, employmentStatus} = req.body;
+        const {firstName, lastName, email, phone, position, department, basicSalary, allowances, deductions, password, role, bio, employmentStatus} = req.body;
 
         const employee = await Employee.findById(id);
         if(!employee) return res.status(404).json({error: "Employee not found"})
@@ -87,7 +87,7 @@ export const updateEmployees = async (req, res)=>{
             department: department || "Engineering",
             basicSalary: Number(basicSalary) || 0,
             allowances: Number(allowances) || 0,
-            deducations: Number(deducations) || 0,
+            deductions: Number(deductions) || 0,
             employmentStatus: employmentStatus || "ACTIVE",
             bio: bio || "",
             })
@@ -109,7 +109,7 @@ export const updateEmployees = async (req, res)=>{
 }
 // Delete employee
 //DELETE/api/employees/:id
-export const deleteEmployees = async (req, res)=>{
+export const deleteEmployee = async (req, res)=>{
   try {
     const { id } = req.params;
 
