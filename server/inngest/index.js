@@ -69,7 +69,7 @@ const leaveApplicationReminder = inngest.createFunction(
 
     await step.sleepUntil("wait-for-the-24-hours", new Date(new Date().getTime() + 24 * 60 * 60 * 1000))
 
-    const leaveAppliction = await LeaveApplication.findById(leaveApplicationId)
+    const leaveApplication = await LeaveApplication.findById(leaveApplicationId)
 
     if (leaveApplication?.status === "PENDING"){
         const employee = await Employee.findById(leaveApplication.employeeId)
