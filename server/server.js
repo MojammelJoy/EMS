@@ -37,7 +37,7 @@ app.use("/api/dashboard", dashboardRouter)
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
-connectDB()
+await connectDB();
 
 if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
