@@ -1,24 +1,31 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { dummyProfileData } from '../assets/assets'
+import { useAuth } from '../context/AuthContext'
+import api from '../api/axios'
 import { CalculatorIcon, ChevronRightIcon, DollarSignIcon, FileTextIcon, LayoutGridIcon, LogOutIcon, MenuIcon, Settings2Icon, UserIcon, XIcon } from 'lucide-react'
 
 const Sidebar = () => {
 
     const { pathname } = useLocation()
+    const { user,  logout } = useAuth()
 
     const [userName, setUserName] = useState('')
     const [mobileOpen, setMobileOpen] = useState(false)
 
     useEffect(()=> {
-        setUserName(dummyProfileData.firstName + "" + dummyProfileData.lastName)
-    }, [])
+        if (!user) return;
+        api.get('/profile').then(({ data }) => {
+            setUserName((data.firstName || '') + ' ' + (data.lastName || ''))
+        }).catch(() => {
+            setUserName(user.email)
+        })
+    }, [user])
 
     useEffect(()=> {
         setMobileOpen(false)
     },[pathname])
 
-    const role = "" || "EMPLOYEE";
+    const role = user?.role || "EMPLOYEE";
 
     const navItems = [
         {name: "Dashboard", href: "/dashboard", icon: LayoutGridIcon },
@@ -30,8 +37,8 @@ const Sidebar = () => {
         {name: "Settings", href: "/settings", icon: Settings2Icon },
     ]
 
-    const handleLogout = ()=>{
-        window.location.href = "/login"
+    const handleLogout = () => {
+        logout()
     }
 
     const sidebarContent = (

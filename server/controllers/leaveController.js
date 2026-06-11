@@ -61,8 +61,7 @@ export const getLeaves = async (req, res) => {
        if(isAdmin){
         const status = req.query.status;
         const where = status ? {status} : {};
-        const leaves = (await LeaveApplication.find(where)).
-        populate("employeeId").sort({ createAt: -1});
+        const leaves = await LeaveApplication.find(where).populate("employeeId").sort({ createdAt: -1});
         const data = leaves.map((l)=>{
             const obj = l.toObject();
             return {
@@ -80,7 +79,7 @@ export const getLeaves = async (req, res) => {
         if(!employee) return res.status(404).json({ error: "Not found" });
         const leaves = await LeaveApplication.find({
             employeeId: employee._id
-        }).sort({ createAt: -1});
+        }).sort({ createdAt: -1});
         return res.json({
             data: leaves,
             employee: {...employee, id: employee._id.toString()}
@@ -101,7 +100,7 @@ export const updateLeaveStatus = async (req, res) => {
        if(!["APPROVED", "REJECTED", "PENDING"].includes(status)){
         return res.status(400).json({ error: "Invalid status"});
        } 
-       const leave = await LeaveApplication.findByIdAndDelete(req.params.id, {status}, {returnDocument: "after"})
+       const leave = await LeaveApplication.findByIdAndUpdate(req.params.id, {status}, {new: true})
        return res.json({success: true, data: leave})
     } catch (error) {
        return res.status(500).json({ error: "Failed"});  

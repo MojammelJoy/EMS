@@ -1,25 +1,33 @@
 import { useCallback, useEffect, useState } from "react"
-import { dummyLeaveData } from "../assets/assets"
+import api from "../api/axios"
+import { useAuth } from "../context/AuthContext"
 import Loading from "../components/Loading"
 import  { PalmtreeIcon, PlusIcon, ThermometerIcon, UmbrellaIcon } from 'lucide-react'
 import LeaveHistory from "../components/leave/LeaveHistory"
 import ApplyLeaveModal from "../components/leave/ApplyLeaveModal"
+import toast from "react-hot-toast"
 
 
 const Leave = () => {
 
+  const { user } = useAuth()
   const [leaves, setLeaves] = useState([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [isDeleted, setIsDeleted] = useState(false);
-  const isAdmin = false;
+  const isAdmin = user?.role === "ADMIN";
 
 
-  const fetchLeaves = useCallback(()=>{
-    setLeaves(dummyLeaveData)
-    setTimeout(()=>{
-      setLoading(false);
-    },1000);
+  const fetchLeaves = useCallback(async ()=>{
+    try {
+      const res = await api.get('/leave')
+      setLeaves(res.data.data || [])
+      if (res.data.employee?.isDeleted) setIsDeleted(true)
+    } catch (error) {
+      toast.error(error?.response?.data.error || error.message)
+    } finally {
+      setLoading(false)
+    }
   },[])
 
   useEffect(()=>{
@@ -30,9 +38,9 @@ const Leave = () => {
 
 
   const approvedLeaves = leaves.filter((l)=>l.status === "APPROVED");
-  const sickCount = approvedLeaves.filter((l)=>l.status === "SICK").length;
-  const casualCount = approvedLeaves.filter((l)=>l.status === "CASUAL").length;
-  const annualCount = approvedLeaves.filter((l)=>l.status === "ANNUAL").length;
+  const sickCount = approvedLeaves.filter((l)=>l.type === "SICK").length;
+  const casualCount = approvedLeaves.filter((l)=>l.type === "CASUAL").length;
+  const annualCount = approvedLeaves.filter((l)=>l.type === "ANNUAL").length;
 
   const leaveStats = [
     {label: "Sick Leave", value: sickCount, icon: ThermometerIcon},
@@ -48,7 +56,7 @@ const Leave = () => {
         </div>
         {!isAdmin && !isDeleted && (
           <button onClick={()=> setShowModal(true)} className="bg-gradient-to-r from-orange-600 to-orange-500 text-white px-5 py-2.5 rounded-md text-sm hover:from-orange-700 hover:to-orange-600 transition-all shadow-md shadow-orange-500/25 active:scale-[0.98] flex items-center gap-2 w-full sm:w-auto justify-center">
-            <PlusIcon w-4 h-4/> Apply for Leave
+            <PlusIcon className="w-4 h-4"/> Apply for Leave
           </button>
         )}
       </div>
