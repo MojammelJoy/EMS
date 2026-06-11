@@ -1,5 +1,7 @@
 import { Loader2, Plus, X } from 'lucide-react'
 import React, { useState } from 'react'
+import api from '../../api/axios'
+import toast from 'react-hot-toast'
 
 const GeneratePayslipForm = ({employees, onSuccess}) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -13,6 +15,17 @@ const GeneratePayslipForm = ({employees, onSuccess}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true)
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData.entries())
+        try {
+            await api.post('/payslips', data)
+            setIsOpen(false)
+            onSuccess()
+        } catch (err) {
+          toast.error(err.response?.data?.error || err?.message);  
+        }
+        setLoading(false)
     }
   return (
     <div className='fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4'>
@@ -26,7 +39,7 @@ const GeneratePayslipForm = ({employees, onSuccess}) => {
         <form onSubmit={handleSubmit} className='space-y-4'>
             <div>
                 <label className='block text-sm font-medium text-slate-700 mb-2'>Employee</label>
-                <select name="employeeId" required>
+                <select name="employeeId" required className='border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500'>
                     {employees.map((e)=>(
                         <option key={e.id} value={e.id}>
                             {e.firstName}  {e.lastName}  {e.position}
@@ -37,7 +50,7 @@ const GeneratePayslipForm = ({employees, onSuccess}) => {
             <div grid grid-cols-2 gap-4>
                 <div>
                      <label className='block text-sm font-medium text-slate-700 mb-2'>Month</label>
-                     <select name="month">
+                     <select name="month" className='border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500'>
                         {Array.from({length: 12}, (_, i)=> i +1).map((m)=>(
                             <option key={m} value={m}>
                                 {m}
@@ -47,27 +60,27 @@ const GeneratePayslipForm = ({employees, onSuccess}) => {
                 </div>
                 <div>
                      <label className='block text-sm font-medium text-slate-700 mb-2'>Year</label>
-                      <input type="number" name="year" defaultValue={new Date().getFullYear()} />
+                      <input type="number" name="year" defaultValue={new Date().getFullYear()} className='border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500' />
                 </div>
                 <div>
                      <label className='block text-sm font-medium text-slate-700 mb-2'>Basic Salary</label>
-                      <input type="number" name="basicSalary" required placeholder='5000' />
+                      <input type="number" name="basicSalary" required placeholder='5000' className='border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500' />
                 </div>
                 <div className='grid grid-cols-2 gap-4'>
                      <div>
                      <label className='block text-sm font-medium text-slate-700 mb-2'>Allowances</label>
-                      <input type="number" name="allowances" defaultValue="0"/>
+                      <input type="number" name="allowances" defaultValue="0" className='border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500'/>
                 </div>
                      <div>
                      <label className='block text-sm font-medium text-slate-700 mb-2'>Deductions</label>
-                      <input type="number" name="deductions" defaultValue="0"/>
+                      <input type="number" name="deductions" defaultValue="0" className='border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500'/>
                 </div>
                 </div>
                 <div className='flex justify-end gap-3 pt-2'>
                     <button onClick={()=> setIsOpen(false)} type='button' className='btn-secondary'>
                         Cancel
                     </button>
-                    <button disabled={loading} type='button' className='bg-gradient-to-r from-orange-600 to-orange-500 text-white px-5 py-2.5 rounded-md text-sm hover:from-orange-700 hover:to-orange-600 transition-all shadow-md shadow-orange-500/25 active:scale-[0.98] flex items-center'>
+                    <button disabled={loading} type='submit' className='bg-gradient-to-r from-orange-600 to-orange-500 text-white px-5 py-2.5 rounded-md text-sm hover:from-orange-700 hover:to-orange-600 transition-all shadow-md shadow-orange-500/25 active:scale-[0.98] flex items-center'>
                     {loading && <Loader2 className='w-4 h-4 mr-2 animate-spin'/>}
                         Generate
                     </button>

@@ -19,13 +19,13 @@ export const login = async (req, res) => {
         if(!user) {
             return res.status(401).json({ error: "Invalid credentails" });
         }
-         
-        if(role_type === "admin" && user.role !== "ADMIN") {
-            return res.status(401).json({ error: "Not authorized as admin"});
-        }
-        if(role_type === "employee" && user.role !== "EMPLOYEE") {
-            return res.status(401).json({ error: "Not authorized as employee"});
-        }
+       if (role_type === "ADMIN" && user.role !== "ADMIN") {
+    return res.status(401).json({ error: "Not authorized as admin" });
+}
+
+if (role_type === "EMPLOYEE" && user.role !== "EMPLOYEE") {
+    return res.status(401).json({ error: "Not authorized as employee" });
+}
 
         const isValid = await bcrypt.compare(password, user.password)
         if(!isValid){

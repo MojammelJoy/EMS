@@ -1,5 +1,7 @@
 import { CalendarDays, FileText, Loader2, Send, X } from 'lucide-react';
 import React, { useState } from 'react'
+import api from '../../api/axios';
+import toast from 'react-hot-toast';
 
 const ApplyLeaveModal = ({open, onClose, onSuccess}) => {
 
@@ -13,6 +15,18 @@ const ApplyLeaveModal = ({open, onClose, onSuccess}) => {
 
     const handleSubmit = async (e) =>  {
         e.preventDefault();
+        setLoading(true)
+
+        const formData = new FormData(e.currentTarget)
+        const data = Object.fromEntries(formData.entries())
+
+        try {
+            await api.post('/leave', data)
+            onSuccess();
+            onClose();
+        } catch (err) {
+            toast.error(err.response?.data?.error || err?.message)
+        }
     }
 
     if(!open) return null
@@ -34,7 +48,7 @@ const ApplyLeaveModal = ({open, onClose, onSuccess}) => {
                         <FileText className='w-4 h-4 text-slate-400'/>
                         Leave Type
                     </label>
-                    <select name="type" required>
+                    <select name="type" required className='border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500'>
                         <option value="SICK">Sick Leave</option>
                         <option value="CASUAL">Casual Leave</option>
                         <option value="ANNUAL">Annual Leave</option>
@@ -48,11 +62,11 @@ const ApplyLeaveModal = ({open, onClose, onSuccess}) => {
                     <div className='grid grid-cols-2 gap-4'>
                         <div>
                             <span className='block text-xs text-slate-400 mb-1'>From</span>
-                            <input type="date" name="startDate" required min={minDate}/>
+                            <input type="date" name="startDate" required min={minDate} className='border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500'/>
                         </div>
                         <div>
                             <span className='block text-xs text-slate-400 mb-1'>To</span>
-                            <input type="date" name="endDate" required min={minDate}/>             
+                            <input type="date" name="endDate" required min={minDate} className='border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500'/>             
                         </div>
                     </div>
                  </div>
@@ -60,14 +74,14 @@ const ApplyLeaveModal = ({open, onClose, onSuccess}) => {
                       <label className=' text-sm font-medium text-slate-700 mb-2 block'>
                         Reason
                     </label>
-                    <textarea name='reason' required rows={3} className='resize-none' placeholder='Briefly describe why you need this leave...'/>
+                    <textarea name='reason' required rows={3} className='resize-none' placeholder='Briefly describe why you need this leave...' className="border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"/>
                  </div>
 
                  <div className='flex gap-3 pt-2'>
                     <button onClick={onClose} type='button' className='btn-secondary flex-1'>
                         Cancel
                     </button>
-                    <button onClick={onClose} type='button' className='bg-gradient-to-r from-orange-600 to-orange-500 text-white px-5 py-2.5 rounded-md text-sm hover:from-orange-700 hover:to-orange-600 transition-all shadow-md shadow-orange-500/25 active:scale-[0.98]  flex-1 flex items-center justify-center gap-2'>
+                    <button disabled={loading} type='submit' className='bg-gradient-to-r from-orange-600 to-orange-500 text-white px-5 py-2.5 rounded-md text-sm hover:from-orange-700 hover:to-orange-600 transition-all shadow-md shadow-orange-500/25 active:scale-[0.98]  flex-1 flex items-center justify-center gap-2'>
                         {loading ? <Loader2 className='w-4 h-4 animate-spin'/> : <Send className='w-4 h-4'/>}
                         {loading ? "Submitting...." : "Submit"}
                     </button>

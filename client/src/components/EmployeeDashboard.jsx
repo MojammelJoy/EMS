@@ -45,7 +45,7 @@ const EmployeeDashboard = ({data}) => {
             ))}
         </div>
         <div className='flex flex-col sm:flex-row gap-3'>
-            <Link to="/attendance" className='btn-primary text-center inline-flex items-center justify-center gap-2'> Mark Attendance <ArrowRightIcon/>
+            <Link to="/attendance" className='bg-gradient-to-r from-orange-600 to-orange-500 text-white px-5 py-2.5 rounded-md text-sm hover:from-orange-700 hover:to-orange-600 transition-all shadow-md shadow-orange-500/25 active:scale-[0.98] text-center inline-flex items-center justify-center gap-2'> Mark Attendance <ArrowRightIcon/>
             </Link>
             <Link to="/leave" className='btn-secondary text-center'>
               Apply for Leave

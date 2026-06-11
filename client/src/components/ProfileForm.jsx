@@ -1,5 +1,6 @@
 import { Loader2, Save, User } from 'lucide-react'
 import React, { useState } from 'react'
+import api from '../api/axios'
 
 const ProfileForm = ({initialData, onSuccess}) => {
 
@@ -10,6 +11,19 @@ const ProfileForm = ({initialData, onSuccess}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true)
+        setError("")
+        setMassage("")
+        const formData = new FormData(e.currentTarget)
+        try {
+            await api.post("/profile", formData)
+            setMassage("Profile updated successfully")
+            onSuccess?.()
+        } catch (err) {
+            setError(err.response?.data?.error || err.message);
+        }finally{
+            setLoading(false)
+        }
     }
   return (
    <form onSubmit={handleSubmit} className='card p-5 sm:p-6 mb-6'>
@@ -48,7 +62,7 @@ const ProfileForm = ({initialData, onSuccess}) => {
 
             <div>
                 <label className='block text-sm font-medium text-slate-700 mb-2'>Bio</label>
-                <textarea disabled={initialData.isDeleted} name="bio" defaultValue={initialData.bio || ""} placeholder='Write a brief bio...' className={`resize-none ${initialData.isDeleted ? "bg-slate-50 text-slate-400 cursor-not-allowed" : ""}`}/>
+                <textarea disabled={initialData.isDeleted} name="bio" defaultValue={initialData.bio || ""} placeholder='Write a brief bio...' className={`resize-none ${initialData.isDeleted ? "bg-slate-50 text-slate-400 cursor-not-allowed" : ""}border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500`}/>
                 <p className='text-xs text-slate-400 mt-1.5'>This will be displayed on your profile.</p>
             </div>
             {initialData.isDeleted ? (

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
-import { dummyEmployeeData, DEPARTMENTS} from "../assets/assets"
+import { DEPARTMENTS} from "../assets/assets"
+import api from "../api/axios"
 import { Plus, Search, X } from "lucide-react"
 import EmployeeCard from "../components/EmployeeCard"
 import EmployeeForm from "../components/EmployeeForm"
@@ -15,10 +16,15 @@ const Employees = () => {
 
   const fetchEmployees = useCallback(async ()=> {
          setLoading(true)
-         setEmployees(dummyEmployeeData.filter((emp)=> (selectedDept ? emp.department === selectedDept : emp)))
-         setTimeout(()=>{
-          setLoading(false)
-         },1000)
+         try {
+           const params = selectedDept ? { department: selectedDept } : {}
+           const { data } = await api.get('/employees', { params })
+           setEmployees(data)
+         } catch {
+           setEmployees([])
+         } finally {
+           setLoading(false)
+         }
   }, [selectedDept])
 
   useEffect(()=> {
@@ -35,7 +41,7 @@ const Employees = () => {
            <h1 className="page-title">Employees</h1>
            <p className="page-subtitle">Manage your team members</p>
          </div>
-         <button onClick={()=> setShowCreateModal(true)} className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center">
+         <button onClick={()=> setShowCreateModal(true)} className="bg-gradient-to-r from-orange-600 to-orange-500 text-white px-5 py-2.5 rounded-md text-sm hover:from-orange-700 hover:to-orange-600 transition-all shadow-md shadow-orange-500/25 active:scale-[0.98] flex items-center gap-2 w-full sm:w-auto justify-center">
           <Plus size={16}/> Add Employee
          </button>
       </div>
@@ -43,9 +49,9 @@ const Employees = () => {
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4"/>
-          <input placeholder="Search employees...." className="w-full pl-10!" onChange={(e) =>setSearch(e.target.value)} value={search}/>
+          <input placeholder="Search employees...." className="w-full pl-10! border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500" onChange={(e) =>setSearch(e.target.value)} value={search}/>
         </div>
-        <select value={selectedDept} onChange={(e)=>setSelectedDept(e.target.value)} className="max-w-40">
+        <select value={selectedDept} onChange={(e)=>setSelectedDept(e.target.value)} className="max-w-40 border border-slate-300 rounded-md outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500">
           <option>All Departments</option>
           {DEPARTMENTS.map((deptName)=>(
             <option key={deptName} value={deptName}>{deptName}</option>
